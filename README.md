@@ -1,6 +1,45 @@
 # Glide_FTP_Demo
 Glide_FTP_Demo,custom Glide AppGlideModule and ModelLoader to load ftp images directly fro android
 
+## 集成方式
+### 1.工程build.gradle
+```
+repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+```
+
+### 2.Module的build.gradle
+```implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'commons-net:commons-net:3.6' //ftp支持库
+```
+
+### 3.新建MyAppGlideModule继承AppGlideModule，注入FTPModelLoaderFactory
+自定义AppGlideModule官方文档
+https://muyangmin.github.io/glide-docs-cn/doc/configuration.html#applications
+
+```
+@GlideModule
+public class MyAppGlideModule extends AppGlideModule {
+    @Override
+    public void applyOptions(Context context, GlideBuilder builder) {
+    }
+
+    @Override
+    public void registerComponents(Context context, Glide glide, Registry registry) {
+        registry.prepend(FTPModel.class, InputStream.class,
+                new FTPModelLoaderFactory(context));
+    }
+    @Override
+    public boolean isManifestParsingEnabled() {
+        return false;
+    }
+}
+```
+
 ## 加载带用户信息的全路径
 
 ```
@@ -21,3 +60,5 @@ FTPModel ftpModel = new FTPModel("192.168.215.150", null, "DSERP", "DSERP", "/DM
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
                         .into(imageView2);
 ```
+
+
