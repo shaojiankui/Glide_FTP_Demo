@@ -37,23 +37,37 @@ public class FTPModel {
     }
 
     public void parseFTPUrl(String ftpPath) {
-        String s1[] = ftpPath.split("@");
-
-        String s2[] = s1[1].split("/");
-        String local = s2[0];
-        String locals[] = local.split(":");
+        String local = null,port = null,username = null,password = null;
         String filePath = "";
-        for (int i = 1; i < s2.length; i++) {
-            filePath = filePath + "/" + s2[i];
+        if (ftpPath != null && !ftpPath.equals("")) {
+            String s1[] = ftpPath.split("@");
+            if (s1.length > 1) {
+                String s2[] = s1[1].split("/");
+                if (s2.length > 0) {
+                    String localArray = s2[0];
+                    String locals[] = localArray.split(":");
+                    if (locals.length == 1) {
+                        local = locals[0];
+                    }
+                    if (locals.length == 2) {
+                        local = locals[0];
+                        port = locals[1];
+                    }
+                    for (int i = 1; i < s2.length; i++) {
+                        filePath = filePath + "/" + s2[i];
+                    }
+                    String login = s1[0].substring(6, s1[0].length());
+                    String loginArr[] = login.split(":");
+                    if (loginArr.length == 2) {
+                        username = loginArr[0];
+                        password = loginArr[1];
+                    }
+                }
+            }
         }
 
-        String login = s1[0].substring(6, s1[0].length());
-        String loginArr[] = login.split(":");
-        String username = loginArr[0];
-        String password = loginArr[1];
-
         this.setServer(local);
-//        this.setPort("80");
+         this.setPort(port);
         this.setUsername(username);
         this.setPassword(password);
         this.setFilePath(filePath);
